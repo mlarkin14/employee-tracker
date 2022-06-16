@@ -110,6 +110,25 @@ const database = {
         this.reset();
         this.init();
     },
+    dropAndEnd: function() {
+
+        db.query(this.dropEmployeeTable, (err, result) => {
+            if (err) throw err;
+            console.log(this.dropEmployeeTable);
+        });
+
+        db.query(this.dropRoleTable, (err, result) => {
+            if (err) throw err;
+            console.log(this.dropRoleTable);
+        });
+
+        db.query(this.dropDepartmentTable, (err, result) => {
+            if (err) throw err;
+            console.log(this.dropDepartmentTable);
+        });
+
+        db.end();
+    }
 };
 
 module.exports = database;
