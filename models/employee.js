@@ -43,6 +43,24 @@ const getAllEmployees = () => {
                             resolve(employees);
                         }
                     });
+                    const getEmployeeID = employeeName => {
+                        if (employeeName === 'None') {
+                            return null;
+                        }
+                        return new Promise((resolve, reject) => {
+                            const firstName = employeeName.split(' ')[0];
+                            const lastName = employeeName.split(' ')[1];
+                            let query = 'SELECT id FROM employee WHERE first_name= ? AND last_name= ?';
+                            mysql.query(query, [firstName, lastName], (err, results, fields) => {
+                                if (err) {
+                                    console.log(err);
+                                    reject(err);
+                                } else {
+                                    resolve(results[0].id);
+                                }
+                            });
+                        });
+                    };
                     const getManagerByID = (managerID) => {
                         return new Promise((resolve, reject) => {
                             const query = "SELECT * FROM employee WHERE id = ?";
@@ -72,10 +90,49 @@ const getAllEmployees = () => {
                                                     } else {
                                                         resolve(results);
                                                     }
+                                                    const getAllEmployeesByManager = managerID => {
+                                                        return new Promise((resolve, reject) => {
+                                                            const query = `SELECT id AS 'ID', 
+                                                              first_name AS 'First Name', 
+                                                              last_name AS 'Last Name'
+                                                            FROM employee WHERE employee.manager_id = ? 
+                                                            ORDER BY employee.first_name ASC`;
+                                                            mysql.query(query, [managerID], (err, results, fields) => {
+                                                                if (err) {
+                                                                    console.log(err);
+                                                                    reject(err);
+                                                                } else {
+                                                                    resolve(results);
+                                                                }
+                                                            });
+                                                        });
+                                                    };
 
+                                                    const getAllManagers = () => {
+                                                        return new Promise((resolve, reject) => {
+                                                            const query =
+                                                                'SELECT * FROM employee, employee manager WHERE employee.manager_id = manager.id';
+                                                            mysql.query(query, (err, results, fields) => {
+                                                                if (err) {
+                                                                    reject(err);
+                                                                } else {
+                                                                    const managers = [];
+                                                                    for (const manager of results) {
+                                                                        const firstName = manager['first_name'];
+                                                                        const lastName = manager['last_name'];
+                                                                        managers.push(`${firstName} ${lastName}`);
+                                                                    }
+                                                                    resolve(managers);
+                                                                }
+                                                            });
+                                                        });
+                                                    };
                                                     module.exports = {
                                                         getAllEmployees,
+                                                        getEmployeeID,
                                                         getAllEmployeesDetails,
                                                         getManagerByID,
-                                                        getAllEmployeesByDepartment
+                                                        getAllEmployeesByDepartment,
+                                                        getAllEmployeesByManager,
+                                                        getAllManagers
                                                     };
