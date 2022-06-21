@@ -25,7 +25,36 @@ const getDepartmentID = (departmentName) => {
     });
 };
 
+const insertDepartment = (departmentName) => {
+    return new Promise((resolve, reject) => {
+        const query = "INSERT INTO department (name) VALUES (?)";
+        mysql.query(query, [departmentName], err => {
+            if (err) {
+                reject(err);
+            } else {
+                console.log('Success');
+                resolve();
+            }
+        });
+    });
+};
+
+const deleteDepartment = (departmentName) => {
+    return new Promise((resolve, reject) => {
+        const query = "DELETE FROM department WHERE name = ?";
+        mysql.query(query, [departmentName], err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve('Success');
+            }
+        });
+    });
+};
+
 module.exports = {
     getDepartmentID,
     getAllDepartments,
+    insertDepartment,
+    deleteDepartment
 };
