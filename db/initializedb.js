@@ -7,7 +7,7 @@ const dbinit = mysql.createConnection({
     // Your MySQL username
     user: 'root',
     // Your MySQL password
-    password: 'toronto!20'
+    password: 'Nintendo91!'
 });
 
 const initializedb = function() {
